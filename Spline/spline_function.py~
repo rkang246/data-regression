@@ -1,0 +1,31 @@
+from scipy import interpolate
+import matplotlib.pyplot as plt
+
+#Open file
+fp = open('wt_pf14_pf18.csv')
+data = []
+
+for line in fp:
+	line = line.strip()
+	line = line.decode('utf-8-sig').encode('utf-8')
+	row = line.split(',')
+	data.append(row)
+
+
+	x_points = [0,40,80,120,150,180,240,300,360]
+	y_points= [0,1.914,6.447,9.564,10.477,12.281,12.846,12.75,12.914,]
+def f(x):
+	
+	tck = interpolate.splrep(x_points, y_points)
+	return interpolate.splev(x, tck)
+
+x = []
+y = []
+
+for i in range(0, 361):
+	x.append(i)
+	y.append(f(i))
+
+plt.plot(x, y)
+plt.show()
+

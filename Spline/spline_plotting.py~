@@ -1,0 +1,41 @@
+#A sample python script that fits a spline to a set of data and #replots that data with a set domain.
+
+from scipy import interpolate
+import matplotlib.pyplot as plt
+
+#open csv from filepath
+#format x,y,std y
+#if no std/error bars wanted, format x,y,0
+fp = open('sample data/wt.csv')
+
+x_points = []
+y_points = []
+std = []
+
+#Copies the data into the arrays
+for line in fp:
+	line = line.strip()
+	line = line.decode('utf-8-sig').encode('utf-8')
+	row = line.split(',')
+	x_points.append(row[0])
+	y_points.append(row[1])
+	std.append(row[2])
+
+
+#The spline function
+def f(x):
+	tck = interpolate.splrep(x_points, y_points)
+	return interpolate.splev(x, tck)
+
+#Replots based on the spline
+x = []
+y = []
+
+#Select range of data to plot
+for i in range(0, 361):
+	x.append(i)
+	y.append(f(i))
+
+plt.plot(x, y)
+plt.show()
+
