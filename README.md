@@ -1,5 +1,9 @@
 # data-regression
 Miscellaneous python data regression scripts.
 
--Linear Regression
--Spline Fitting
+<b>
+  -Linear Regression
+  
+  
+  -Spline Fitting
+<b>
