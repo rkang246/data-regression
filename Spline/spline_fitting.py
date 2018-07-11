@@ -17,9 +17,18 @@ def plot(data_file):
 		x_points.append(row[0])
 		y_points.append(row[1])
 	
+	#Testing, weight is based off distance from mean
+	avg = 0
+	wt = []
+	for i in y_points:
+		avg += float(i)
+	avg /= len(y_points)
+	for i in y_points:
+		wt.append(abs(float(i) - avg))
+		
 	#Spline Function
 	def f(x):
-		tck = interpolate.splrep(x_points, y_points,w=None,k=2)
+		tck = interpolate.splrep(x_points, y_points,w=wt,k=2)
 		return interpolate.splev(x, tck)
 
 	#The set of data to be replotted
