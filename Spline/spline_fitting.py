@@ -1,23 +1,58 @@
-#A sample python script that fits a spline to a set of data and #replots that data with a set domain.
+#!/usr/bin/env python2
+#
+# ======================================================
+#	Program:	spline_fitting.py
+#	Author:		Robert Kang
+#			(rkang246@gmail.com)
+#	Created:	2018-07-11
+#	Modified	2018-07-12
+# ------------------------------------------------------
+# Use: To plot a set of data and fit curve with
+#      spline function fitting
+# ======================================================
+#
 
 from scipy import interpolate
 import matplotlib.pyplot as plt
 
-def plot(data_file):
+def readData(data_file):
+	"""
+	Reads the data from the input file
+	
+	Args:
+		data_file: data_file: A file in csv format with
+			   "x,y" for each row
+
+	Returns:
+		A 2D list x_y such that x_y[0] contains the
+		x-values of the data_file and x_y[1] contains
+		the y-values of the data_file.
+	"""
 	fp = open(data_file)
+	x_y = [[], []]
 
-	x_points = []
-	y_points = []
-
-	#Read data
 	for line in fp:
 		line = line.strip()
 		line = line.decode('utf-8-sig').encode('utf-8')
 		row = line.split(',')
-		x_points.append(row[0])
-		y_points.append(row[1])
+		x_y[0].append(row[0])
+		x_y[1].append(row[1])
+
+	return x_y
+
+
+def weight(x_points, y_points):
+	"""
+	Generates the weighting for the spline fitting.
 	
-	#Testing, weight is based off distance from mean
+	Args:
+		x_points: A float array of x-values
+		y_points: A float array of y-values
+	
+	Returns:
+		A float array of weights based on the
+		y-value's distance from the average.
+	"""
 	avg = 0
 	wt = []
 	for i in y_points:
@@ -25,23 +60,71 @@ def plot(data_file):
 	avg /= len(y_points)
 	for i in y_points:
 		wt.append(abs(float(i) - avg))
-		
-	#Spline Function
-	def f(x):
-		tck = interpolate.splrep(x_points, y_points,w=wt,k=2)
-		return interpolate.splev(x, tck)
+	return wt
 
-	#The set of data to be replotted
+
+def f(x, x_points, y_points, wt):
+	"""
+	Performs spline fitting based off of a given set
+	of data.
+	
+	Args:
+		x: An integer x-value to best fit
+		x_points: A float array of x-values
+		y_points: A float array of y-values
+		wt: A float array of weights
+	
+	Returns:
+		A float y-value that corresponds to the
+		inputted x-value using the spline fit
+	"""
+	tck = interpolate.splrep(x_points, y_points,w=wt,k=2)
+	return interpolate.splev(x, tck)
+
+
+def plot(x_points, y_points, wt, rangeMin, rangeMax, data_file):
+	"""
+	Plots a set of data in a given range using 
+	spline fitting
+	
+	Args:
+		x_points: A float array of x-values
+		y_points: A float array of y-values
+		wt: A float array of weights
+		rangeMin: An integer starting value for
+			  the domain to be plot
+		rangeMax: An integer ending value for
+			  the domain to be plot
+		data_file: A file in csv format with
+			   "x,y" for each row
+	
+	Returns:
+		none
+		
+	"""
 	x = []
 	y = []
 
-	for i in range(0, 331):
+	for i in range(rangeMin, rangeMax + 1):
 		x.append(i)
-		y.append(f(i))
+		y.append(f(i, x_points, y_points, wt))
 
 	plt.title(data_file)
 	plt.plot(x, y)
 	plt.show()
 
-plot('sample data/wt.csv')
+
+def main(data_file, rangeMin, rangeMax):
+
+	read_data = readData(data_file)
+	x_points = read_data[0]
+	y_points = read_data[1]
+
+	wt = weight(x_points, y_points)
+
+	plot(x_points, y_points, wt, rangeMin, rangeMax, data_file)
+
+
+if __name__ == "__main__":
+	main('sample data/wt.csv', 0, 330)
 
