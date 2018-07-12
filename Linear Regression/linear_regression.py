@@ -1,39 +1,58 @@
-#Reads from file
-#csv x,y
-file_object = open("test_data.csv", "r")
-
-data = []
-
-for line in file_object.readlines():
-	if len(line) != 1:
-		data.append(line.split(","))
-
-file_object.close()
+#!/usr/bin/env python2
+#
+# ======================================================
+#	Program:	linear_regression.py
+#	Author:		Robert Kang
+#			(rkang246@gmail.com)
+#	Created:	2018-07-9
+#	Modified	2018-07-12
+# ------------------------------------------------------
+# Use: A basic linear regression program
+# ======================================================
+#
 
 def mean(dt):
+	"""
+	Finds the average of an array of values.
+	"""
 	s = 0
 	for i in dt:
 		try:
 			s += float(i)
 		except ValueError, e:
 			print e
-
 	return s / len(dt)
-m = 0
-den = 0
-x_avg = mean([i[0] for i in data])
-y_avg = mean([i[1] for i in data])
 
-for i in range(0, len(data)):
-	m += (float(data[i][0]) - x_avg) * (float(data[i][1]) - y_avg);
-	den += (float(data[i][0]) - x_avg)**2
 
-m /= den
+def main(data_file):
+	file_object = open(data_file, "r")
 
-b = y_avg - m * x_avg
+	data = []
 
-equation = "y = " + str(m) + "x + " + str(b)
-print "Linear Regression:", equation
+	for line in file_object.readlines():
+		if len(line) != 1:
+			data.append(line.split(","))
 
+	file_object.close()
+
+	m = 0
+	den = 0
+	x_avg = mean([i[0] for i in data])
+	y_avg = mean([i[1] for i in data])
+
+	for i in range(0, len(data)):
+		m += (float(data[i][0]) - x_avg) * (float(data[i][1]) - y_avg);
+		den += (float(data[i][0]) - x_avg)**2
+
+	m /= den
+
+	b = y_avg - m * x_avg
+
+	equation = "y = " + str(m) + "x + " + str(b)
+	print "Linear Regression:", equation
+
+
+if __name__ == "__main__":
+	main("test_data.csv")
 		
 
