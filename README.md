@@ -6,4 +6,7 @@ Miscellaneous python data regression scripts.
   
   
   -Spline Fitting
+  
+  
+  -Polynomial Regression
 <b>
