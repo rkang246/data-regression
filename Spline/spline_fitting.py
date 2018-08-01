@@ -5,7 +5,7 @@
 #	Author:		Robert Kang
 #			(rkang246@gmail.com)
 #	Created:	2018-07-11
-#	Modified	2018-07-12
+#	Modified	2018-08-01
 # ------------------------------------------------------
 # Use: To plot a set of data and fit curve with
 #      spline function fitting
@@ -29,14 +29,15 @@ def readData(data_file):
 		the y-values of the data_file.
 	"""
 	fp = open(data_file)
-	x_y = [[], []]
+	x_y = [[], [], []]
 
 	for line in fp:
 		line = line.strip()
 		line = line.decode('utf-8-sig').encode('utf-8')
 		row = line.split(',')
-		x_y[0].append(row[0])
-		x_y[1].append(row[1])
+		x_y[0].append(float(row[0]))
+		x_y[1].append(float(row[1]))
+		x_y[2].append(float(row[2]))
 
 	return x_y
 
@@ -82,7 +83,7 @@ def f(x, x_points, y_points, wt):
 	return interpolate.splev(x, tck)
 
 
-def plot(x_points, y_points, wt, rangeMin, rangeMax, data_file):
+def plot(x_points, y_points, wt, rangeMin, rangeMax, std, title):
 	"""
 	Plots a set of data in a given range using 
 	spline fitting
@@ -95,8 +96,8 @@ def plot(x_points, y_points, wt, rangeMin, rangeMax, data_file):
 			  the domain to be plot
 		rangeMax: An integer ending value for
 			  the domain to be plot
-		data_file: A file in csv format with
-			   "x,y" for each row
+		std: A float array of standard deviation values
+		title: The string graph title
 	
 	Returns:
 		none
@@ -109,22 +110,27 @@ def plot(x_points, y_points, wt, rangeMin, rangeMax, data_file):
 		x.append(i)
 		y.append(f(i, x_points, y_points, wt))
 
-	plt.title(data_file)
+	plt.title(title)
+	plt.errorbar(x_points, y_points, yerr=std, fmt='o')
+	plt.grid(True)
+	plt.xlabel("Time (Minutes)")
+	plt.ylabel("Length (Microns)")
 	plt.plot(x, y)
 	plt.show()
 
 
-def main(data_file, rangeMin, rangeMax):
+def main(data_file, rangeMin, rangeMax, title):
 
 	read_data = readData(data_file)
 	x_points = read_data[0]
 	y_points = read_data[1]
+	std = read_data[2]
 
 	wt = weight(x_points, y_points)
-
-	plot(x_points, y_points, wt, rangeMin, rangeMax, data_file)
+	plot(x_points, y_points, wt, rangeMin, rangeMax, std, title)
 
 
 if __name__ == "__main__":
-	main('sample data/wt.csv', 0, 330)
+	main('sample data/pf18.csv', 0, 360, "PF18 Cilium Regrowth")
+	main('sample data/wt.csv', 0, 330, "Wildtype Cilium Regrowth")
 
