@@ -1,20 +1,20 @@
 #!/usr/bin/env python2
 #
 # ======================================================
-#	Program:	polynomial_regression.py
+#	Program:	logarithmic_regression.py
 #	Author:		Robert Kang
 #			(rkang246@gmail.com)
 #	Created:	2018-08-01
 #	Modified	2018-08-01
 # ------------------------------------------------------
-# Use: 
+# Use: To plot and fit a set of data using logarithmic
+#      regression.
 # ======================================================
 #
 
 import numpy as np
 from scipy import interpolate
 import matplotlib.pyplot as plt
-
 
 def readData(data_file):
 	"""
@@ -45,9 +45,9 @@ def readData(data_file):
 
 	return x_y_std
 
-def f(x, y, degree):
+def f(x, y):
 	"""
-	Performs polynomial regression on the "degree"th degree.
+	Performs logarithmic regression.
 	
 	Args:
 		x: A float array of x-values
@@ -55,12 +55,12 @@ def f(x, y, degree):
 		degree: The degree of polynomial regression
 	
 	Returns:
-		An array of float values, of polynomial coefficients,
-		highest power first.
+		An array of float log coefficients, [a, b]
+		such that alog(x) + b
 	"""
-	return np.polyfit(x, y, degree)
+	return np.polyfit(np.log(x), y, 1)
 
-def getEquation(x_values, y_values, degree):
+def getReg(x_values, y_values):
 	"""
 	Converts the regression into an equation.
 	
@@ -72,15 +72,10 @@ def getEquation(x_values, y_values, degree):
 	Returns:
 		A string equation form.
 	"""
-	regression = f(np.array(x_values), np.array(y_values), degree)
-	equation = ""
-	for i in range(0, len(regression)):
-		equation += "" + str(regression[i]) + "*x**" + str(degree - i)
-		if i != len(regression) - 1:
-			equation += "+"
-	return equation
+	regression = f(np.array(x_values), np.array(y_values))
+	return regression
 	
-def plot(equation, x_min, x_max, x_values, y_values, std, title):
+def plot(x_min, x_max, x_values, y_values, std, title):
 	"""
 	Plots an equation in a given range.
 	
@@ -100,14 +95,11 @@ def plot(equation, x_min, x_max, x_values, y_values, std, title):
 	Returns:
 		none
 	"""
+	reg = getReg(x_values, y_values)
 	x = np.array(range(x_min, x_max + 1))
-	y = eval(equation)
+	y = reg[0] * np.log(x) + reg[1]
 	plt.plot(x, y, color='blue')
 
-	#if "Wildtype" in title:
-	#	plt.plot(x, y, color='blue')
-	#else:
-	#	plt.plot(x, y, color='green')
 
 	plt.errorbar(x_values, y_values, yerr=std, fmt='o')
 
@@ -117,19 +109,16 @@ def plot(equation, x_min, x_max, x_values, y_values, std, title):
 	plt.grid(True)
 	plt.show()
 
-def main(data_file, degree, x_min, x_max, title):
+def main(data_file, x_min, x_max, title):
 	read_data = readData(data_file)
 	x_values = read_data[0]
 	y_values = read_data[1]
 	std = read_data[2]
-	equation = getEquation(x_values, y_values, degree)
 
-	plot(equation, x_min, x_max, x_values, y_values, std, title)
+	plot(x_min, x_max, x_values, y_values, std, title)
 
 	
 
 if __name__ == "__main__":
-	main('sample data/wt.csv', 4, 0, 330, "Wildtype Cilium Regrowth")
-	main('sample data/pf18.csv', 6, 0, 360, "PF18 Cilium Regrowth")
-	#plt.title("Chlamydomonas Regrowth Profile")
-	#plt.show()
+	main('sample data/wt.csv', 0, 330, "Wildtype Cilium Regrowth")
+	main('sample data/pf18.csv', 0, 360, "PF18 Cilium Regrowth")
