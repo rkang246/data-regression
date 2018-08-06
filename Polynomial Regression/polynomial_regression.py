@@ -7,7 +7,8 @@
 #	Created:	2018-08-01
 #	Modified	2018-08-01
 # ------------------------------------------------------
-# Use: 
+# Use: To plot and fit a set of data using polynomial
+#      regression.
 # ======================================================
 #
 
@@ -102,7 +103,13 @@ def plot(equation, x_min, x_max, x_values, y_values, std, title):
 	"""
 	x = np.array(range(x_min, x_max + 1))
 	y = eval(equation)
-	plt.plot(x, y)
+	plt.plot(x, y, color='blue')
+
+	#if "Wildtype" in title:
+	#	plt.plot(x, y, color='blue')
+	#else:
+	#	plt.plot(x, y, color='green')
+
 	plt.errorbar(x_values, y_values, yerr=std, fmt='o')
 
 	plt.title(title)
@@ -119,8 +126,11 @@ def main(data_file, degree, x_min, x_max, title):
 	equation = getEquation(x_values, y_values, degree)
 
 	plot(equation, x_min, x_max, x_values, y_values, std, title)
+
 	
 
 if __name__ == "__main__":
 	main('sample data/wt.csv', 4, 0, 330, "Wildtype Cilium Regrowth")
 	main('sample data/pf18.csv', 6, 0, 360, "PF18 Cilium Regrowth")
+	#plt.title("Chlamydomonas Regrowth Profile")
+	#plt.show()
