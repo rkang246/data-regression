@@ -5,7 +5,7 @@
 #	Author:		Robert Kang
 #			(rkang246@gmail.com)
 #	Created:	2018-08-01
-#	Modified	2018-08-01
+#	Modified	2018-08-07
 # ------------------------------------------------------
 # Use: To plot and fit a set of data using logarithmic
 #      regression.
@@ -67,7 +67,6 @@ def getReg(x_values, y_values):
 	Args:
 		x_values: A float array of x-values
 		y_values: A float array of y-values
-		degree: The degree of polynomial regression
 	
 	Returns:
 		A string equation form.

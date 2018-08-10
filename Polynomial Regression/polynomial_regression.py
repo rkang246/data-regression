@@ -130,7 +130,7 @@ def main(data_file, degree, x_min, x_max, title):
 	
 
 if __name__ == "__main__":
-	main('sample data/wt.csv', 4, 0, 330, "Wildtype Cilium Regrowth")
+	main('sample data/wt.csv', 3, 0, 330, "Wildtype Cilium Regrowth")
 	main('sample data/pf18.csv', 6, 0, 360, "PF18 Cilium Regrowth")
 	#plt.title("Chlamydomonas Regrowth Profile")
 	#plt.show()

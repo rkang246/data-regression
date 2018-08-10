@@ -7,7 +7,8 @@
 #	Created:	2018-08-01
 #	Modified	2018-08-01
 # ------------------------------------------------------
-# Use: 
+# Use: To plot and fit a set of data using polynomial
+#      regression.
 # ======================================================
 #
 
@@ -104,10 +105,10 @@ def plot(equation, x_min, x_max, x_values, y_values, std, title):
 	y = eval(equation)
 	plt.plot(x, y, color='blue')
 
-	#if "Wildtype" in title:
-	#	plt.plot(x, y, color='blue')
-	#else:
-	#	plt.plot(x, y, color='green')
+	if "Wildtype" in title:
+		plt.plot(x, y, color='blue')
+	else:
+		plt.plot(x, y, color='green')
 
 	plt.errorbar(x_values, y_values, yerr=std, fmt='o')
 
@@ -115,7 +116,7 @@ def plot(equation, x_min, x_max, x_values, y_values, std, title):
 	plt.xlabel("Time (Minutes)")
 	plt.ylabel("Length (Microns)")
 	plt.grid(True)
-	plt.show()
+	#plt.show()
 
 def main(data_file, degree, x_min, x_max, title):
 	read_data = readData(data_file)
@@ -129,7 +130,7 @@ def main(data_file, degree, x_min, x_max, title):
 	
 
 if __name__ == "__main__":
-	main('sample data/wt.csv', 4, 0, 330, "Wildtype Cilium Regrowth")
+	main('sample data/wt.csv', 3, 0, 330, "Wildtype Cilium Regrowth")
 	main('sample data/pf18.csv', 6, 0, 360, "PF18 Cilium Regrowth")
 	#plt.title("Chlamydomonas Regrowth Profile")
-	#plt.show()
+	plt.show()
