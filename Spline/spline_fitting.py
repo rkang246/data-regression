@@ -64,7 +64,7 @@ def weight(x_points, y_points):
 	return wt
 
 
-def f(x, x_points, y_points, wt):
+def f(x, x_points, y_points, wt, k):
 	"""
 	Performs spline fitting based off of a given set
 	of data.
@@ -74,16 +74,17 @@ def f(x, x_points, y_points, wt):
 		x_points: A float array of x-values
 		y_points: A float array of y-values
 		wt: A float array of weights
+		k: k value to perform spline
 	
 	Returns:
 		A float y-value that corresponds to the
 		inputted x-value using the spline fit
 	"""
-	tck = interpolate.splrep(x_points, y_points,w=wt,k=2)
+	tck = interpolate.splrep(x_points, y_points,w=wt,k=k)
 	return interpolate.splev(x, tck)
 
 
-def plot(x_points, y_points, wt, rangeMin, rangeMax, std, title):
+def plot(x_points, y_points, wt, rangeMin, rangeMax, std, title, k):
 	"""
 	Plots a set of data in a given range using 
 	spline fitting
@@ -108,7 +109,7 @@ def plot(x_points, y_points, wt, rangeMin, rangeMax, std, title):
 
 	for i in range(rangeMin, rangeMax + 1):
 		x.append(i)
-		y.append(f(i, x_points, y_points, wt))
+		y.append(f(i, x_points, y_points, wt, k))
 
 	plt.title(title)
 	plt.errorbar(x_points, y_points, yerr=std, fmt='o')
@@ -116,10 +117,11 @@ def plot(x_points, y_points, wt, rangeMin, rangeMax, std, title):
 	plt.xlabel("Time (Minutes)")
 	plt.ylabel("Length (Microns)")
 	plt.plot(x, y)
+
 	plt.show()
 
 
-def main(data_file, rangeMin, rangeMax, title):
+def main(data_file, rangeMin, rangeMax, title, k):
 
 	read_data = readData(data_file)
 	x_points = read_data[0]
@@ -127,10 +129,9 @@ def main(data_file, rangeMin, rangeMax, title):
 	std = read_data[2]
 
 	wt = weight(x_points, y_points)
-	plot(x_points, y_points, wt, rangeMin, rangeMax, std, title)
+	plot(x_points, y_points, wt, rangeMin, rangeMax, std, title, k)
 
 
 if __name__ == "__main__":
-	main('sample data/pf18.csv', 0, 360, "PF18 Cilium Regrowth")
-	main('sample data/wt.csv', 0, 330, "Wildtype Cilium Regrowth")
-
+	main('sample data/pf18.csv', 0, 360, "PF18 Cilium Regrowth", 2)
+	main('sample data/wt.csv', 0, 330, "Wildtype Cilium Regrowth", 3)
